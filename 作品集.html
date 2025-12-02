@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HU YUNPING | Product Manager Portfolio</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;500;700;900&family=Poppins:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- 0. CSS Reset & Variables --- */
+        :root {
+            --bg-paper: #F2F0E9;
+            --ink-black: #0F0F0F;
+            --ink-grey: #4A4A4A;
+            --accent-red: #D62828;
+            --border-color: #0F0F0F;
+            
+            --font-cn: 'Noto Serif SC', serif;
+            --font-en: 'Poppins', sans-serif;
+            
+            /* Animation Variables */
+            --anim-duration: 1.2s;
+            --anim-curve: cubic-bezier(0.2, 0.8, 0.2, 1); /* Ease-out-expo-ish */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: var(--bg-paper);
+            color: var(--ink-black);
+            font-family: var(--font-en);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- 1. Typography System --- */
+        .cn { font-family: var(--font-cn); }
+        .en { font-family: var(--font-en); letter-spacing: -0.02em; }
+        
+        .display-text {
+            font-size: clamp(3rem, 7vw, 9rem);
+            font-weight: 900;
+            line-height: 0.9;
+            text-transform: uppercase;
+            letter-spacing: -0.04em;
+        }
+
+        .h1-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .meta-label {
+            font-family: var(--font-en);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--ink-grey);
+            margin-bottom: 0.8rem;
+            display: inline-block;
+            border-bottom: 1px solid var(--ink-black);
+            padding-bottom: 0.2rem;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            text-align: justify;
+            color: #222;
+        }
+
+        /* --- 2. Animations (Requirement: Fade, Slide, Blur, Both, No Opacity 0) --- */
+        
+        @keyframes blur-slide-in {
+            0% {
+                opacity: 0;
+                transform: translateY(40px) scale(0.98);
+                filter: blur(12px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        /* Base class for elements to be animated */
+        .reveal-text {
+            /* We do NOT set opacity: 0 here as requested. 
+               The animation 'both' mode will handle the initial state 
+               once the animation class is applied. */
+        }
+
+        /* The active animation class added by JS */
+        .is-in-view {
+            animation-name: blur-slide-in;
+            animation-duration: var(--anim-duration);
+            animation-timing-function: var(--anim-curve);
+            animation-fill-mode: both; /* Key requirement */
+        }
+
+        /* --- 3. Layout Structure --- */
+        .page-container {
+            width: 100%;
+            max-width: 1600px; /* Constrain max width for better readability on huge screens */
+            margin: 0 auto;
+            border-left: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            background: var(--bg-paper);
+        }
+
+        /* Header */
+        header {
+            padding: 8rem 4rem 4rem 4rem;
+            border-bottom: 2px solid var(--border-color);
+            position: relative;
+        }
+
+        /* Main Projects Section */
+        .projects-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-block {
+            padding: 6rem 4rem;
+            border-bottom: 2px solid var(--border-color);
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 4rem;
+        }
+        
+        .project-meta {
+            position: relative;
+        }
+        
+        .project-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-index {
+            font-family: var(--font-en);
+            font-size: 8rem;
+            font-weight: 900;
+            color: rgba(0,0,0,0.03);
+            line-height: 0.8;
+            position: absolute;
+            top: -2rem;
+            left: -2rem;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Bottom Profile Info (Moved from Aside) */
+        .profile-bottom-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .profile-col {
+            padding: 4rem 2rem;
+            border-right: 1px solid var(--border-color);
+        }
+        .profile-col:last-child { border-right: none; }
+
+        /* Divider */
+        .divider-section {
+            background: var(--ink-black);
+            color: var(--bg-paper);
+            padding: 2rem;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .scrolling-text {
+            display: inline-block;
+            animation: scroll 30s linear infinite;
+            font-family: var(--font-en);
+            font-weight: 700;
+            font-size: 4rem;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--ink-black);
+            color: var(--bg-paper);
+            padding: 6rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        /* --- 4. Components --- */
+        
+        /* Language Toggle */
+        .lang-switch {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 100;
+            background: var(--ink-black);
+            color: var(--bg-paper);
+            padding: 0.8rem 1.5rem;
+            border-radius: 0; /* Boxier feel */
+            cursor: pointer;
+            font-family: var(--font-en);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border: 1px solid var(--ink-black);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .lang-switch:hover {
+            background: var(--accent-red);
+            border-color: var(--accent-red);
+            transform: translateY(-2px);
+        }
+
+        /* Visibility Logic */
+        [data-lang="en"] { display: none; }
+        body.lang-en [data-lang="cn"] { display: none; }
+        body.lang-en [data-lang="en"] { display: block; }
+        body.lang-en span[data-lang="en"] { display: inline; }
+
+        .tag-pill {
+            display: inline-block;
+            border: 1px solid var(--ink-black);
+            padding: 0.4rem 0.8rem;
+            font-size: 0.75rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .tag-pill:hover {
+            background: var(--ink-black);
+            color: var(--bg-paper);
+        }
+
+        /* Phone Frame Component */
+        .phone-mockup-container {
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+            padding: 2rem 0 3rem 0;
+            margin-top: 2rem;
+            width: 100%;
+            cursor: grab;
+            /* Hiding scrollbar */
+            -ms-overflow-style: none;  
+            scrollbar-width: none;  
+        }
+        .phone-mockup-container::-webkit-scrollbar { display: none; }
+
+        .phone-frame {
+            flex-shrink: 0;
+            width: 280px;
+            height: 580px; 
+            background: #fff;
+            border: 10px solid var(--ink-black);
+            border-radius: 40px;
+            position: relative;
+            box-shadow: 20px 20px 0px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: transform 0.4s var(--anim-curve);
+        }
+        .phone-frame:hover {
+            transform: translateY(-10px);
+            box-shadow: 25px 25px 0px rgba(0,0,0,0.12);
+        }
+        
+        .phone-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 28px;
+            background: var(--ink-black);
+            border-bottom-left-radius: 14px;
+            border-bottom-right-radius: 14px;
+            z-index: 10;
+        }
+
+        .phone-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .workflow-step {
+            display: flex;
+            align-items: center;
+            margin-top: 2rem;
+            font-family: var(--font-en);
+            font-weight: 600;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .workflow-arrow {
+            color: var(--accent-red);
+            font-size: 1.2rem;
+        }
+
+        /* --- 5. Responsive --- */
+        @media (max-width: 1024px) {
+            .project-block { grid-template-columns: 1fr; gap: 2rem; padding: 4rem 2rem; }
+            .profile-bottom-grid { grid-template-columns: 1fr 1fr; }
+            .profile-col { border-right: none; border-bottom: 1px solid var(--border-color); }
+            header { padding: 6rem 2rem 3rem 2rem; }
+            .display-text { font-size: 3.5rem; }
+        }
+        
+        @media (max-width: 600px) {
+            .profile-bottom-grid { grid-template-columns: 1fr; }
+            footer { flex-direction: column; align-items: flex-start; gap: 2rem; }
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+    </style>
+</head>
+<body class="">
+
+    <!-- Language Toggle -->
+    <button class="lang-switch" onclick="toggleLanguage()">
+        <span data-lang="cn">CN / EN</span>
+        <span data-lang="en">EN / CN</span>
+    </button>
+
+    <div class="page-container">
+        
+        <!-- 1. Header Area -->
+        <header>
+            <div class="reveal-text">
+                <span class="meta-label">Product Manager Portfolio</span>
+            </div>
+            <h1 class="display-text reveal-text">
+                Hu <span style="color:var(--accent-red)">Yunping</span><br>
+                <span class="cn" data-lang="cn" style="font-weight: 300; font-size: 0.4em; display:block; margin-top:0.5rem;">胡芸萍</span>
+                <span class="en" data-lang="en" style="font-weight: 300; font-size: 0.4em; display:block; margin-top:0.5rem;">Portfolio</span>
+            </h1>
+            <div class="reveal-text" style="margin-top: 2rem; max-width: 700px;">
+                <p>
+                    <span data-lang="cn" class="cn" style="font-size: 1.5rem; font-weight: 500;">心理学 x 大数据 x AI 赋能<br>利用数据洞察人性，利用 AI 赋能工作。</span>
+                    <span data-lang="en" class="en" style="font-size: 1.5rem; font-weight: 500;">Psychology x Big Data x AI EdTech.<br>Building human-centric products with data-driven insights.</span>
+                </p>
+            </div>
+        </header>
+
+        <!-- 2. Main Projects Section (Now Full Width Grid) -->
+        <section class="projects-section">
+            
+            <!-- Project 01 -->
+            <article class="project-block">
+                <div class="project-meta reveal-text">
+                    <div class="project-index">01</div>
+                    <span class="meta-label" style="color:var(--accent-red)">Featured Case</span>
+                    <div class="tag-pill">AIGC Workflow</div>
+                    <div class="tag-pill">Adaptive Learning</div>
+                </div>
+                <div class="project-content">
+                    <h2 class="h1-title reveal-text">
+                        <span data-lang="cn" class="cn">AI 外教哈佛情景课</span>
+                        <span data-lang="en" class="en">AI Foreign Teacher Scenario</span>
+                    </h2>
+                    <div class="reveal-text">
+                        <p class="cn" data-lang="cn">
+                            <strong>核心逻辑：</strong>针对学生在语言学习中普遍面临的“学习内容枯燥乏味、难以匹配个人进度”的核心痛点，打造沉浸式的 AI 语言学习体验。通过“视频学习-口语操练-实战演练-学习报告”的流程实现学习闭环。 
+                        </p>
+                        <p class="en" data-lang="en">
+                            <strong>Core Logic:</strong> Creating an immersive AI language learning experience. We are not just "generating" content, but reconstructing the content production pipeline. Inspired by Speak's dynamic difficulty algorithm.
+                        </p>
+                        <div style="background: rgba(0,0,0,0.03); padding: 1.5rem; margin: 2rem 0; border-left: 4px solid var(--accent-red);">
+                            <span class="meta-label">The Workflow</span>
+                            <div class="workflow-step">
+                                <span>Prompt Engineering</span>
+                                <span class="workflow-arrow">→</span>
+                                <span>Img2Video (文生图转视频)</span>
+                                <span class="workflow-arrow">→</span>
+                                <span>Lip-Sync AI (对口型)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="phone-mockup-container reveal-text">
+                        <div class="phone-frame"><img src="https://i.ibb.co/Kg6TW9y/9f4d542645f0859ce0be74984b508868.jpg" alt="Flow"></div>
+                        <div class="phone-frame"><img src="https://i.ibb.co/LXJxv6zM/a36a4724f6bfd174bded9ea6f1477647.jpg" alt="Steps"></div>
+                        <div class="phone-frame"><img src="https://i.ibb.co/39j307SJ/82a509c729a1667cbac5bf88cd73b686.jpg" alt="Unit List"></div>
+                        <div class="phone-frame"><img src="https://i.ibb.co/kLRfg4D/0db34177b54d9f2151dbf2521afcf087.jpg" alt="Simon Video"></div>
+                         <div class="phone-frame" style="border: 2px dashed #ccc; display: flex; align-items:center; justify-content:center; background:#f9f9f9;"><span style="color:#aaa;">More...</span></div>
+                    </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Project 02 -->
+            <article class="project-block">
+                <div class="project-meta reveal-text">
+                    <div class="project-index">02</div>
+                    <span class="meta-label" style="color:var(--accent-red)">Featured Case</span>
+                    <div class="tag-pill">Scoring Algo</div>
+                    <div class="tag-pill">Feedback Loop</div>
+                </div>
+                <div class="project-content">
+                    <h2 class="h1-title reveal-text">
+                        <span data-lang="cn" class="cn">雅思口语智能模块</span>
+                        <span data-lang="en" class="en">IELTS Smart Coach</span>
+                    </h2>
+                    <div class="reveal-text">
+                        <p class="cn" data-lang="cn">
+                            <strong>核心逻辑：</strong>针对中国学生“开口难、无思路”的痛点。设计了雅思学习闭环系统，并利用“流利度、语法、词汇、发音”多维度评分模型提供即时反馈。
+                        </p>
+                        <p class="en" data-lang="en">
+                            <strong>Core Logic:</strong> Addressing the pain point of "nothing to say" for students. Designed a closed-loop system of Pre-Task (Ideation) and Post-Task (Scientific Scoring) using multi-dimensional scoring models.
+                        </p>
+                         <div style="background: rgba(0,0,0,0.03); padding: 1.5rem; margin: 2rem 0; border-left: 4px solid var(--accent-red);">
+                            <span class="meta-label">The Workflow</span>
+                            <div class="workflow-step">
+                                <span>Scaffolding</span>
+                                <span class="workflow-arrow">→</span>
+                                <span>Immersive AI Dialogue Practice</span>
+                                <span class="workflow-arrow">→</span>
+                                <span>Scientific Assessment</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="phone-mockup-container reveal-text">
+                        <div class="phone-frame"><img src="https://i.ibb.co/4gfQj11Z/e60c8b49bd1d46796ec2cc6f6f4c49c2.jpg" alt="Simon Video"></div>
+                        <div class="phone-frame"><img src="https://i.ibb.co/4nspWf2L/da27873ab93cc5e9532481a569873367.jpg" alt="Analysis"></div>
+                        <div class="phone-frame"><img src="https://i.ibb.co/BVFV6v9v/2cbaef840f3d559bee09f6c2ec12e7ec.jpg" alt="Score"></div>
+                        <div class="phone-frame" style="border: 2px dashed #ccc; display: flex; align-items:center; justify-content:center; background:#f9f9f9;"><span style="color:#aaa;">More...</span></div>
+                    </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Project 03 -->
+            <article class="project-block">
+                <div class="project-meta reveal-text">
+                    <div class="project-index">03</div>
+                    <span class="meta-label" style="color:var(--accent-red)">Innovation</span>
+                    <div class="tag-pill">Rapid MVP</div>
+                    <div class="tag-pill">Creative</div>
+                </div>
+                <div class="project-content">
+                    <h2 class="h1-title reveal-text">
+                        <span data-lang="cn" class="cn">Google Studio 原型工场</span>
+                        <span data-lang="en" class="en">Google Studio Lab</span>
+                    </h2>
+                    <div class="reveal-text">
+                        <p class="cn" data-lang="cn">
+                            利用 Google Studio 快速落地的创新 App 矩阵。包含《梗王争霸》(MemeBurst) 与 《梦境志》(Dreamlog)，
+                        </p>
+                        <p class="en" data-lang="en">
+                            An experimental app matrix built with Google Studio. Includes "MemeBurst" and "Dream Journal", exploring core aesthetics and the visualization of the subconscious.
+                        </p>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- 3. Profile Details (Moved to Bottom) -->
+        <section class="profile-bottom-grid" id="profile-details">
+            
+            <!-- Contact -->
+            <div class="profile-col">
+                <div class="reveal-text">
+                    <span class="meta-label">Contact / 联系</span>
+                    <p class="en" style="font-weight: 700; font-size: 1.2rem; margin-top: 1rem;">
+                        huyun7905@gmail.com<br>Hangzhou, China
+                    </p>
+                </div>
+            </div>
+
+            <!-- Education -->
+            <div class="profile-col">
+                <div class="reveal-text">
+                    <span class="meta-label">Education / 学历</span>
+                    <div style="margin-top: 1rem; margin-bottom: 2rem;">
+                        <strong class="cn" data-lang="cn" style="font-size: 1.1rem; display:block;">北京师范大学 (硕士)</strong>
+                        <strong class="en" data-lang="en" style="font-size: 1.1rem; display:block;">Beijing Normal University (Master)</strong>
+                        <div style="font-size: 0.9rem; opacity: 0.6; margin-top:0.2rem;">
+                            <span data-lang="cn">心理行为与大数据 | 2023-2026</span>
+                            <span data-lang="en">Psychology & Big Data | 2023-2026</span>
+                        </div>
+                    </div>
+                    <div>
+                        <strong class="cn" data-lang="cn" style="font-size: 1.1rem; display:block;">宁波诺丁汉大学 (本科)</strong>
+                        <strong class="en" data-lang="en" style="font-size: 1.1rem; display:block;">Univ. of Nottingham Ningbo (Bachelor)</strong>
+                        <div style="font-size: 0.9rem; opacity: 0.6; margin-top:0.2rem;">
+                            <span data-lang="cn">国际传播学 | 2019-2023</span>
+                            <span data-lang="en">Intl. Communications | 2019-2023</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expertise -->
+            <div class="profile-col">
+                <div class="reveal-text">
+                    <span class="meta-label">Expertise / 专长</span>
+                    <div style="margin-top: 1rem;">
+                        <div class="tag-pill">AI Product</div>
+                        <div class="tag-pill">Prompt Engineering</div>
+                        <div class="tag-pill">Data Analysis (Python)</div>
+                        <div class="tag-pill">User Research</div>
+                        <div class="tag-pill">EdTech</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manifesto -->
+            <div class="profile-col">
+                <div class="reveal-text">
+                    <span class="meta-label">Manifesto / 理念</span>
+                    <p class="cn" data-lang="cn" style="margin-top: 1rem;">
+                        在数字洪流中，我认为产品不应只是功能的堆砌，而是情感与逻辑的精密编织。作为拥有心理学背景的产品经理，我致力于在算法的冷峻中注入人文的温度。
+                    </p>
+                    <p class="en" data-lang="en" style="margin-top: 1rem;">
+                        In the digital torrent, products should not just be a pile of features, but a precise weaving of emotion and logic. I strive to inject human warmth into the coolness of algorithms.
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 4. Divider (Marquee) -->
+        <section class="divider-section">
+            <div class="scrolling-text">
+                DATA DRIVEN DESIGN — PSYCHOLOGY BASED INSIGHTS — AI POWERED EDUCATION — DATA DRIVEN DESIGN —
+            </div>
+        </section>
+
+        <!-- 5. Footer -->
+        <footer>
+            <div style="border-left: 2px solid #fff; padding-left: 1.5rem;">
+                <h3 class="display-text" style="font-size: 3rem; color: #fff;">HYP.</h3>
+                <p style="color: #888; font-size: 0.9rem; margin-top: 0.5rem;">
+                    © 2025 Hu Yunping.<br>All rights reserved.
+                </p>
+            </div>
+            <div style="text-align: right;">
+                <span class="meta-label" style="color: #666; border-color: #444;">Links</span>
+                <ul style="list-style: none; margin-top: 1rem;">
+                    <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #fff; text-decoration: none; font-weight:600;">Download Resume PDF</a></li>
+                    <li style="margin-bottom: 0.5rem;"><a href="mailto:huyun7905@gmail.com" style="color: #fff; text-decoration: none; font-weight:600;">Email Me</a></li>
+                    <li style="margin-bottom: 0.5rem;"><a href="#" style="color: #fff; text-decoration: none; font-weight:600;">LinkedIn</a></li>
+                </ul>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        function toggleLanguage() {
+            document.body.classList.toggle('lang-en');
+        }
+
+        // --- Intersection Observer for Animations ---
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15 // Trigger when 15% of the element is visible
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        // Stagger children animation if entry is a container, OR animate element itself
+                        entry.target.classList.add('is-in-view');
+                        
+                        // We stop observing once animated to avoid re-triggering (optional)
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            const elementsToReveal = document.querySelectorAll('.reveal-text');
+            
+            // Add staggered delay to elements based on their order in the container
+            // This is a simple heuristic to stagger simultaneous entries
+            let delayCounter = 0;
+            elementsToReveal.forEach((el, index) => {
+                // Assign a tiny delay index if they are close to each other in DOM
+                // We use inline style for staggering
+                el.style.animationDelay = `${(index % 5) * 0.15}s`; 
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>
